@@ -6,6 +6,14 @@ RUN apt-get update && \
     apt-get install -y git
 
 ADD ./get-pip.py /
+RUN python get-pip.py
+
+# install python and venv
+RUN apt-get update \
+&& apt-get install -y software-properties-common curl \
+&& add-apt-repository ppa:deadsnakes/ppa \
+&& apt-get update \
+&& apt-get install -y python3.6 python3.6-venv
 
 RUN mkdir /home/sites
 
@@ -23,11 +31,3 @@ RUN mkdir /home/sites/staging && \
 RUN mkdir /home/sites/test && \
      cd /home/sites/test && \
      git clone https://github.com/StevenGreenup/django_app.git
-
-
-RUN apt-get update && \
-    apt-get -y install build-essential&& \
-    apt-get -y install libffi-dev libssl-dev && \
-    rm -rf /var/lib/apt/lists/*
-
-CMD ["python"]
