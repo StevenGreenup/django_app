@@ -1,6 +1,4 @@
-FROM ubuntu:xenial
-
-MAINTAINER sgreenup
+FROM mrupgrade/deadsnakes:3.6
 
 # install git
 RUN apt-get update && \
@@ -9,21 +7,27 @@ RUN apt-get update && \
 
 ADD ./get-pip.py /
 
-#Change directory and clone Qxf2 Public POM repo
-RUN mkdir /usr/my_site \
-    && cd /usr/my_site \
-    && git clone https://github.com/qxf2/qxf2-page-object-model.git
+RUN mkdir /home/sites
 
-RUN apt-get purge -y python.* && \
-    echo "deb http://ppa.launchpad.net/fkrull/deadsnakes/ubuntu xenial main" >> /etc/apt/sources.list && \
-    echo "deb-src http://ppa.launchpad.net/fkrull/deadsnakes/ubuntu xenial main" >> /etc/apt/sources.list && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FF3997E83CD969B409FB24BC5BB92C09DB82666C && \
-    apt-get update && \
-    apt-get install -y python__PY_VER__ && \
-    python__PY_VER__ /get-pip.py && \
-    pip install --upgrade pip && \
-    ln -s /usr/bin/python__PY_VER__ /usr/bin/python && \
-    rm -f /get-pip.py && \
+#Change directory and clone mysite Public POM repo
+RUN mkdir /home/sites/production && \
+     cd /home/sites/production && \
+     git clone https://github.com/StevenGreenup/django_app.git
+
+#Change directory and clone mysite Public POM repo
+RUN mkdir /home/sites/staging && \
+     cd /home/sites/staging && \
+     git clone https://github.com/StevenGreenup/django_app.git
+
+#Change directory and clone mysite Public POM repo
+RUN mkdir /home/sites/test && \
+     cd /home/sites/test && \
+     git clone https://github.com/StevenGreenup/django_app.git
+
+
+RUN apt-get update && \
+    apt-get -y install build-essential&& \
+    apt-get -y install libffi-dev libssl-dev && \
     rm -rf /var/lib/apt/lists/*
 
 CMD ["python"]
